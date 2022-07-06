@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 contract Marketplace is ReentrancyGuard {
     using Counters for Counters.Counter;
-    Counters.Counter private _nftSold;
+    Counters.Counter private _nftsSold;
     Counters.Counter private _nftCount;
     uint256 public LISTING_FEE = 0.0001 ether;
     address payable private _marketOwner;
@@ -18,7 +18,8 @@ contract Marketplace is ReentrancyGuard {
         uint256 tokenId;
         address payable seller;
         address payable owner;
-        uint256 listed;
+        uint256 price;
+        bool listed;   
     }
 
     event NFTListed(
@@ -42,7 +43,7 @@ contract Marketplace is ReentrancyGuard {
     }
 
     // List the NFT on the marketplace
-    function listNft(address _nftContract, uint256 _tokenId, uint256 _price) public payable nonReetrant {
+    function listNft(address _nftContract, uint256 _tokenId, uint256 _price) public payable nonReentrant {
         require(_price > 0, "Price must be at least 1 wei");
         require(msg.value == LISTING_FEE, "Not Enough ether for listing fee");
 
@@ -61,7 +62,7 @@ contract Marketplace is ReentrancyGuard {
     }
 
     // Buy an NFT
-    function buyNft(address _nftContract, uint256 _tokenId) public payable nonReetrant {
+    function buyNft(address _nftContract, uint256 _tokenId) public payable nonReentrant {
         NFT storage nft = _idToNFT[_tokenId];
         require(msg.value >= nft.price, "Not enough enter to cover asking price");
 
@@ -76,7 +77,7 @@ contract Marketplace is ReentrancyGuard {
         emit NFTSold(_nftContract, nft.tokenId, nft.seller, buyer, msg.value);
     }
     // Resell an NFT purchased from the marketplace
-    function resellNft(address _nftContract, uint256 _tokenId, uint256 _price) public payable nonReetrant {
+    function resellNft(address _nftContract, uint256 _tokenId, uint256 _price) public payable nonReentrant {
         require(_price > 0, "Price must be at least 1 wei");
         require(msg.value == LISTING_FEE, "Not enough ether for listing fee");
 
@@ -89,7 +90,7 @@ contract Marketplace is ReentrancyGuard {
         nft.price = _price;
 
         _nftsSold.decrement();
-        emit NFTListed(_nftContract, _tokenId, msg.sender, owner, price);
+        emit NFTListed(_nftContract, _tokenId, msg.sender, address(this), _price);
     }
 
     function getListingFee() public view returns (uint256) {
@@ -116,7 +117,6 @@ contract Marketplace is ReentrancyGuard {
         uint myNftCount = 0;
         for (uint i = 0; i < nftCount; i++) {
             if (_idToNFT[i + 1].owner == msg.sender) {
-                nfts[nftsIndex] = _idToNFT[i + 1];
                 myNftCount++;
             }
         }
