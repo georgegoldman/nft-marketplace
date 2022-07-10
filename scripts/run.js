@@ -2,13 +2,13 @@ var BoredPetsNFT = artifacts.require("BoredPetsNFT")
 var Marketplace = artifacts.require("Marketplace");
 
 async function logNftLists(marketplace) {
-    let listedNfts = await marketplace.getListedNfts.call()
-    const accountAddress = '0x4f32922c20AfA152Ec92947E0629552473363750'
-    let myNfts = await marketplace.getMyNfts.call({from: accountAddress})
-    let myListedNfts = await marketplace.getMyListedNfts.call({from: accountAddress})
-    console.log(`listedNfts: ${listedNfts.length}`)
-    console.log(`myNfts: ${myNfts.length}`)
-    console.log(`myListedNfts ${myListedNfts.length}\n`)
+	let listedNfts = await marketplace.getListedNfts.call()
+	const accountAddress = '0xB127442bb6ae4F372420156959352aC77073C66C';
+	let myNfts = await marketplace.getMyNfts.call({from: accountAddress})
+	let myListedNfts = await marketplace.getMyListedNfts.call({from: accountAddress})
+	console.log(`listedNfts: ${listedNfts.length}`)
+	console.log(`myNfts: ${myNfts.length}`)
+	console.log(`myListedNfts ${myListedNfts.length}\n`)
 }
 
 const main = async (cb) => {
@@ -31,7 +31,7 @@ const main = async (cb) => {
         let tokenId3 = txn3.logs[2].args[0].toNumber()
         await marketplace.listNft(boredPets.address, tokenId3, 1, { value: listingFee })
         console.log(`Minted and listed ${tokenId3}`)
-        await logNftLists(marketplace)
+        // await logNftLists(marketplace)
 
         console.log('BUY 2 NFTs')
         await marketplace.buyNft(boredPets.address, tokenId1, { value: 1 })
