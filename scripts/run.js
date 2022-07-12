@@ -3,7 +3,7 @@ var Marketplace = artifacts.require("Marketplace");
 
 async function logNftLists(marketplace) {
 	let listedNfts = await marketplace.getListedNfts.call()
-	const accountAddress = '0xB127442bb6ae4F372420156959352aC77073C66C';
+	const accountAddress = '0x399275159CC3754DAaf7d1A9c1C6CC7DeAd4d3a3';
 	let myNfts = await marketplace.getMyNfts.call({from: accountAddress})
 	let myListedNfts = await marketplace.getMyListedNfts.call({from: accountAddress})
 	console.log(`listedNfts: ${listedNfts.length}`)
@@ -31,7 +31,7 @@ const main = async (cb) => {
         let tokenId3 = txn3.logs[2].args[0].toNumber()
         await marketplace.listNft(boredPets.address, tokenId3, 1, { value: listingFee })
         console.log(`Minted and listed ${tokenId3}`)
-        // await logNftLists(marketplace)
+        await logNftLists(marketplace)
 
         console.log('BUY 2 NFTs')
         await marketplace.buyNft(boredPets.address, tokenId1, { value: 1 })

@@ -19,7 +19,7 @@ contract Marketplace is ReentrancyGuard {
         address payable seller;
         address payable owner;
         uint256 price;
-        bool listed;   
+        bool listed;
     }
 
     event NFTListed(
@@ -99,7 +99,7 @@ contract Marketplace is ReentrancyGuard {
 
     function getListedNfts() public view returns (NFT[] memory) {
         uint256 nftCount = _nftCount.current();
-        uint256 unsoldNftsCount = nftCount - _nftCount.current();
+        uint256 unsoldNftsCount = nftCount - _nftsSold.current();
 
         NFT[] memory nfts = new NFT[](unsoldNftsCount);
         uint nftsIndex = 0;
@@ -109,6 +109,7 @@ contract Marketplace is ReentrancyGuard {
                 nftsIndex++;
             }
         }
+        
         return nfts;
     }
 
