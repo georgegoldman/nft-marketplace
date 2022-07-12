@@ -2,3 +2,5 @@
 build/
 node_modules/
 jsconfig.json
+.vscode
+client
